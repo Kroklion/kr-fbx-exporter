@@ -1,0 +1,13 @@
+schema_version = "1.0.0"
+
+id = "kr_fbx_format_export"
+version = "0.1.0"
+name = "kr-fbx-export"
+tagline = "Fork of Blenders FBX exporter with fixes and features"
+maintainer = "Kroklion"
+type = "add-on"
+tags = ["Import-Export"]
+blender_version_min = "5.2.0"
+license = [
+  "SPDX:GPL-2.0-or-later",
+]

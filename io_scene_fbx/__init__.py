@@ -1,18 +1,19 @@
 # SPDX-FileCopyrightText: 2011-2023 Blender Foundation
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Kroklion
 
 bl_info = {
     "name": "FBX format",
-    # This is now displayed as the maintainer, so show the foundation.
     # "author": "Campbell Barton, Bastien Montagne, Jens Restemeier, @Mysteryem", # Original Authors
-    "author": "Blender Foundation",
+    # "author": "Blender Foundation",
+    "author": "Krolion",
     "version": (5, 15, 0),
     "blender": (5, 0, 0),
     "location": "File > Import-Export",
     "description": "FBX IO meshes, UVs, vertex colors, materials, textures, cameras, lamps and actions",
     "warning": "",
-    "doc_url": "{BLENDER_MANUAL_URL}/addons/import_export/scene_fbx.html",
+    "doc_url": "",
     "support": 'OFFICIAL',
     "category": "Import-Export",
 }
@@ -46,7 +47,7 @@ from bpy_extras.io_utils import (
     poll_file_object_drop,
 )
 
-
+'''
 @orientation_helper(axis_forward='-Z', axis_up='Y')
 class ImportFBX(bpy.types.Operator, ImportHelper):
     """Load a FBX file"""
@@ -307,13 +308,13 @@ def import_panel_armature(layout, operator):
         sub.enabled = not operator.automatic_bone_orientation
         sub.prop(operator, "primary_bone_axis")
         sub.prop(operator, "secondary_bone_axis")
-
+'''
 
 @orientation_helper(axis_forward='-Z', axis_up='Y')
 class ExportFBX(bpy.types.Operator, ExportHelper):
     """Write a FBX file"""
-    bl_idname = "export_scene.fbx"
-    bl_label = "Export FBX"
+    bl_idname = "export_scene.kr_fbx"
+    bl_label = "KR Export FBX"
     bl_options = {'UNDO', 'PRESET'}
 
     filename_ext = ".fbx"
@@ -712,21 +713,24 @@ def export_panel_animation(layout, operator):
         body.prop(operator, "bake_anim_step")
         body.prop(operator, "bake_anim_simplify_factor")
 
-
+'''
 def menu_func_import(self, context):
     self.layout.operator(
         ImportFBX.bl_idname,
         text=bpy.types.FileHandler.label_with_extensions("IO_FH_fbx") + " " + iface_("(Legacy)"))
-
+'''
 
 def menu_func_export(self, context):
-    self.layout.operator(
-        ExportFBX.bl_idname, text=bpy.types.FileHandler.label_with_extensions("IO_FH_fbx"))
+    if hasattr(bpy.types.FileHandler, "label_with_extensions"):
+        self.layout.operator(
+            ExportFBX.bl_idname, text="kr " + bpy.types.FileHandler.label_with_extensions("IO_FH_fbx"))
+    else:
+        self.layout.operator(ExportFBX.bl_idname, text="kr FBX (.fbx)")
 
 
 classes = (
-    ImportFBX,
-    ExportFBX
+    # ImportFBX,
+    ExportFBX,
 )
 
 
@@ -734,12 +738,12 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.TOPBAR_MT_file_import.append(menu_func_import)
+    # bpy.types.TOPBAR_MT_file_import.append(menu_func_import)
     bpy.types.TOPBAR_MT_file_export.append(menu_func_export)
 
 
 def unregister():
-    bpy.types.TOPBAR_MT_file_import.remove(menu_func_import)
+    # bpy.types.TOPBAR_MT_file_import.remove(menu_func_import)
     bpy.types.TOPBAR_MT_file_export.remove(menu_func_export)
 
     for cls in classes:

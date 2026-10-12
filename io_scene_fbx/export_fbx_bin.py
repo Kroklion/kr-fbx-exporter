@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: 2014 Bastien Montagne
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2026 Kroklion
 
 import datetime
 import math
@@ -3597,7 +3598,7 @@ def save_single(operator, scene, depsgraph, filepath="",
 
     import bpy_extras.io_utils
 
-    print('\nFBX export starting... %r' % filepath)
+    print('\nkr FBX export starting... %r' % filepath)
     start_time = time.time()
 
     # Generate some data about exported scene...
