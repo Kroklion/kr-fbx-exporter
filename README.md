@@ -4,6 +4,13 @@ A fork of Blenders FBX exporter.
 
 ## Features
 
+**Fixes for "Apply Transform" Problems**
+   - Object transforms break on every second relation
+   - Armature orientation not baked
+
+
+**Fix for Unit settings**
+   - Scale of armature is 100, first bone 0.01 with FBX exporter default scale setting. Units can now be left at default in both Blender and Unity while **"Apply Transform"** is active.
 
 ---
 
@@ -18,7 +25,7 @@ A fork of Blenders FBX exporter.
 
 ## Usage
 
-**kr FBX (.fbx)** appears under File > Export.
+**kr FBX (.fbx)** appears under File > Export. Use like the official FBX exporter.
 
 
 ## Requirements
