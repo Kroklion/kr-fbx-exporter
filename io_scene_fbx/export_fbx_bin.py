@@ -2166,8 +2166,9 @@ def fbx_skeleton_from_armature(scene, settings, arm_obj, objects, data_meshes,
 
     arm_data = arm_obj.bdata.data
     bones = {}
-    for bo in arm_obj.bones:
-        if settings.use_armature_deform_only:
+
+    if settings.use_armature_deform_only:
+        for bo in arm_obj.bones:
             if bo.bdata.use_deform:
                 bones[bo] = True
                 bo_par = bo.parent
@@ -2176,7 +2177,22 @@ def fbx_skeleton_from_armature(scene, settings, arm_obj, objects, data_meshes,
                     bo_par = bo_par.parent
             elif bo not in bones:  # Do not override if already set in the loop above!
                 bones[bo] = False
-        else:
+
+    elif settings.include_bone_group != '':
+        export_collection = arm_data.collections.get(settings.include_bone_group)
+        if not export_collection:
+            return
+        for bo in arm_obj.bones:
+            if export_collection.name in bo.bdata.collections:
+                bones[bo] = True
+                # add all parent bones
+                bo_par = bo.parent
+                while bo_par.is_bone:
+                    bones[bo_par] = True
+                    bo_par = bo_par.parent
+
+    else:
+        for bo in arm_obj.bones:
             bones[bo] = True
 
     bones = {bo: None for bo, use in bones.items() if use}
@@ -3506,6 +3522,7 @@ def save_single(operator, scene, depsgraph, filepath="",
                 mesh_smooth_type='FACE',
                 use_subsurf=False,
                 use_armature_deform_only=False,
+                include_bone_group='',
                 bake_anim=True,
                 bake_anim_use_all_bones=True,
                 bake_anim_use_nla_strips=True,
@@ -3593,7 +3610,7 @@ def save_single(operator, scene, depsgraph, filepath="",
         bake_space_transform, global_matrix_inv, global_matrix_inv_transposed,
         context_objects, object_types, use_mesh_modifiers, use_mesh_modifiers_render,
         mesh_smooth_type, use_subsurf, use_mesh_edges, use_tspace, use_triangles,
-        armature_nodetype, use_armature_deform_only,
+        armature_nodetype, use_armature_deform_only, include_bone_group,
         add_leaf_bones, bone_correction_matrix, bone_correction_matrix_inv,
         bake_anim, bake_anim_use_all_bones, bake_anim_use_nla_strips, bake_anim_use_all_actions,
         bake_anim_step, bake_anim_simplify_factor, bake_anim_force_startend_keying,
@@ -3674,6 +3691,7 @@ def defaults_unity3d():
         "use_triangles": False,
 
         "use_armature_deform_only": True,
+        "include_bone_group": '',
 
         "use_custom_props": True,
 

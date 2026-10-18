@@ -12,6 +12,9 @@ A fork of Blenders FBX exporter.
 **Fix for Unit settings**
    - Scale of armature is 100, first bone 0.01 with FBX exporter default scale setting. Units can now be left at default in both Blender and Unity while **"Apply Transform"** is active.
 
+**Choose Bones By Group**
+   - A new setting "Bone Group" is added: Name of a bone group. If not empty, export only bones contained in this group and their parents. Will be unavailable if 'Only Deform Bones' is set
+
 ---
 
 ## Installation

@@ -499,6 +499,11 @@ class ExportFBX(bpy.types.Operator, ExportHelper):
         description="Only write deforming bones (and non-deforming ones when they have deforming children)",
         default=False,
     )
+    include_bone_group: StringProperty(
+        name="Bone Group",
+        description="Name of a bone group. If not empty, export only bones contained in this group and their parents. Will be ignored if 'Only Deform Bones' is set",
+        default='',
+    )
     armature_nodetype: EnumProperty(
         name="Armature FBXNode Type",
         items=(('NULL', "Null", "'Null' FBX node, similar to Blender's Empty (default)"),
@@ -696,6 +701,9 @@ def export_panel_armature(layout, operator):
         body.prop(operator, "secondary_bone_axis")
         body.prop(operator, "armature_nodetype")
         body.prop(operator, "use_armature_deform_only")
+        sub = body.row()
+        sub.enabled = not operator.use_armature_deform_only
+        sub.prop(operator, "include_bone_group")
         body.prop(operator, "add_leaf_bones")
 
 
