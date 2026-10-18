@@ -1975,6 +1975,8 @@ def fbx_data_object_elements(root, ob_obj, scene_data):
             obj_type = b"Root"
         elif scene_data.settings.armature_nodetype == 'LIMBNODE':
             obj_type = b"LimbNode"
+        elif scene_data.settings.armature_nodetype == 'OMIT':
+            return
         else:  # Default, preferred option...
             obj_type = b"Null"
     elif (ob_obj.type in BLENDER_OBJECT_TYPES_MESHLIKE):
@@ -2298,6 +2300,9 @@ def fbx_animations_do(scene_data, ref_id, f_start, f_end, start_zero, objects=No
 
     for ob_obj in objects:
         if ob_obj.parented_to_armature:
+            continue
+        if scene_data.settings.armature_nodetype == 'OMIT' and ob_obj.type == 'ARMATURE':
+            # Don't add animation for armature
             continue
         ACNW = AnimationCurveNodeWrapper
         loc, rot, scale, _m, _mr = ob_obj.fbx_object_tx(scene_data)
@@ -3066,8 +3071,17 @@ def fbx_data_from_scene(scene, depsgraph, settings):
 
     # Objects (with classical parenting).
     for ob_obj in objects:
+        if settings.armature_nodetype == 'OMIT' and ob_obj.type == 'ARMATURE':
+            # Armature will not be added to FBX hierarchy
+            continue
         # Bones are handled later.
         if not ob_obj.is_bone:
+            if settings.armature_nodetype == 'OMIT' and (
+                    ob_obj.parent is not None) and ob_obj.parent.type == 'ARMATURE':
+                # An object (not bone) is parented to the armature
+                # Armature itself having a parent? This is not considered
+                connections.append((b"OO", ob_obj.fbx_uuid, 0, None))
+                continue
             par_obj = ob_obj.parent
             # Meshes parented to armature are handled separately, yet we want the 'no parent' connection (0).
             if par_obj and ob_obj.has_valid_parent(objects) and (par_obj, ob_obj) not in arm_parents:
@@ -3078,6 +3092,10 @@ def fbx_data_from_scene(scene, depsgraph, settings):
     # Armature & Bone chains.
     for bo_obj in data_bones.keys():
         par_obj = bo_obj.parent
+        if settings.armature_nodetype == 'OMIT' and (par_obj is not None) and par_obj.type == 'ARMATURE':
+            # Without armature the root bone(s) need to be parented to FBX root
+            connections.append((b"OO", bo_obj.fbx_uuid, 0, None))
+            continue
         if par_obj not in objects:
             continue
         connections.append((b"OO", bo_obj.fbx_uuid, par_obj.fbx_uuid, None))

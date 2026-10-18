@@ -15,6 +15,10 @@ A fork of Blenders FBX exporter.
 **Choose Bones By Group**
    - A new setting "Bone Group" is added: Name of a bone group. If not empty, export only bones contained in this group and their parents. Will be unavailable if 'Only Deform Bones' is set
 
+**Omit Armature Node**
+   - The "Armature FBXNode Type" drop down gets an additional option 'OMIT'. The armature node is discarded and root bones are put into FBX root. Allows root motion to work in Unity,
+
+
 ---
 
 ## Installation
@@ -45,4 +49,5 @@ This project is licensed under the terms of the [GNU General Public License v2.0
 
 ## Acknowledgements
 
-This project forks Blender's **io_scene_fbx** core addon, specifically the Python FBX exporter.
+* This project forks Blender's [io_scene_fbx](https://projects.blender.org/blender/blender/src/branch/main/scripts/addons_core/io_scene_fbx) core addon, specifically the Python FBX exporter.
+* Thanks to [A-Ribeiro](https://github.com/A-Ribeiro/CustomBlenderFBXExporter) for the initial analysis of the Unity Root Motion problem.

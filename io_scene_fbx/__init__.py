@@ -509,6 +509,7 @@ class ExportFBX(bpy.types.Operator, ExportHelper):
         items=(('NULL', "Null", "'Null' FBX node, similar to Blender's Empty (default)"),
                ('ROOT', "Root", "'Root' FBX node, supposed to be the root of chains of bones..."),
                ('LIMBNODE', "LimbNode", "'LimbNode' FBX node, a regular joint between two bones..."),
+               ('OMIT', "Omit", "Armature node is discarded and root bones are put into FBX root."),
                ),
         description="FBX type of node (object) used to represent Blender's armatures "
         "(use the Null type unless you experience issues with the other app, "

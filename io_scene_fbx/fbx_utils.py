@@ -1819,6 +1819,15 @@ class ObjectWrapper(metaclass=MetaObjectWrapper):
             # In any case, pre-multiply the global matrix to get it in FBX global space!
             matrix = scene_data.settings.global_matrix @ matrix
 
+        if scene_data.settings.armature_nodetype == 'OMIT' and \
+                self.parented_to_armature == False and \
+                parent is not None and \
+                global_space is False and \
+                parent.type == 'ARMATURE':
+            # if armature is omitted any children get its transform
+            parent_matrix = parent.fbx_object_matrix(scene_data, rest=rest)
+            matrix = parent_matrix @ matrix
+
         return matrix
 
     def fbx_object_tx(self, scene_data, rest=False, rot_euler_compat=None):
